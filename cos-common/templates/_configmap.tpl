@@ -48,6 +48,32 @@
 {{- /* Split textual and binary payloads. */ -}}
 {{- $data := default dict $cfg.data -}}
 {{- $binaryData := default dict $cfg.binaryData -}}
+{{- $includeNginxConf := default dict $cfg.includeNginxConf -}}
+{{- $includeRobotsTxt := default dict $cfg.includeRobotsTxt -}}
+
+{{- /* Optionally inject generated nginx.conf into data. */ -}}
+{{- if (default false $includeNginxConf.enabled) -}}
+  {{- $nginxKey := default "nginx.conf" $includeNginxConf.filename -}}
+  {{- if not (hasKey $data $nginxKey) -}}
+    {{- $_ := set $data $nginxKey (include "cos-common.nginxConf" (dict
+      "root" $root
+      "values" $vals
+      "profile" $includeNginxConf.profile
+      "options" (default dict $includeNginxConf.options)
+    )) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Optionally inject generated robots.txt into data. */ -}}
+{{- if (default false $includeRobotsTxt.enabled) -}}
+  {{- $robotsKey := default "robots.txt" $includeRobotsTxt.filename -}}
+  {{- if not (hasKey $data $robotsKey) -}}
+    {{- $_ := set $data $robotsKey (include "cos-common.robotsTxt" (dict
+      "header" $includeRobotsTxt.header
+      "disallow" $includeRobotsTxt.disallow
+    )) -}}
+  {{- end -}}
+{{- end -}}
 
 ---
 apiVersion: v1

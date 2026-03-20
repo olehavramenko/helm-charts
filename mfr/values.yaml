@@ -379,11 +379,11 @@ main:
   configMap:
     enabled: true
     tpl: true
-    data:
-      nginx.conf: |
-        {{ tpl (.Files.Get "files/nginx.conf") (dict "Values" .Values "root" .) }}
-      robots.txt: |-
-        {{ .Files.Get "files/robots.txt" }}
+    includeNginxConf:
+      enabled: true
+      profile: http-proxy
+    includeRobotsTxt:
+      enabled: true
 
 # configmap name: '{{ include "cos-common.fullname" (dict "root" . "name" "") | trim }}' + name
   additionalConfigMaps:

@@ -133,7 +133,7 @@ app:
 ### Notable behaviors
 - **Enablement**: `enabled: false` on the component skips all its resources. Most sub-blocks (`service`, `ingress`, `hpa`, `pdb`, etc.) also have their own `enabled` flag.
 - **Naming/labels**: standard Helm labels are applied; `fullnameOverride` works at both component and sub-resource level. Names are trimmed to 63 chars.
-- **ConfigMap**: `tpl: true` renders `.data` through Helm’s engine. `additionalConfigMaps[]` lets you emit extra ConfigMaps without new templates.
+- **ConfigMap**: `tpl: true` renders `.data` through Helm’s engine. Optional `includeNginxConf` and `includeRobotsTxt` can generate shared `nginx.conf`/`robots.txt` entries, and `additionalConfigMaps[]` lets you emit extra ConfigMaps without new templates.
 - **Secret**: `.data` is auto base64’d. `includeTls: true` can merge TLS files from `.Values.tls.*.files`. `additionalSecrets[]` is supported.
 - **Ingress**: requires `hosts` or `defaultBackend`. Besides the legacy `hosts[]` block, you can use grouped hosts via `hosts.primary`/`hosts.additional` with `rules[]` (per-rule enablement and `includeForPrimaryHost`/`includeForAdditionalHost`) to fan out shared path sets across host groups; `servicePort` defaults to `service.ports[0]` when not set on a path/backend.
 - **Maintenance**: when `.Values.maintenance.enabled` is true, ingress targets the maintenance service/port (`maintenance.service.externalPort` or `maintenance.servicePort`) instead of the component service; override the maintenance service name with `maintenance.service.name` when needed.
